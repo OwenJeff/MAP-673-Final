@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Final Map Prototype</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: whitesmoke;
+            font-family: Lato, sans-serif;
+            color: #0D0000;
+        }
+        
+        #map {
+            position: absolute;
+            width: 80%;
+            top: 0;
+            bottom: 0;
+            right: 0;
+        }
+        
+        li,
+        h1,
+        h2,
+        p {}
+        
+        img {}
+        
+        #ui-controls {
+            width: 15%;
+            padding: 8px 25px 8px 15px;
+            background: rgba(75, 75, 75, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            color: whitesmoke;
+        }
+        
+        #ui-controls .min {
+            float: left;
+        }
+        
+        #ui-controls .max {
+            float: right;
+            margin-right: -15px;
+        }
+        
+        .year-slider {
+            width: 100%;
+        }
+        
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+    <div id="map"></div>
+    <div id="ui-controls">
+        <label><span class="min">1889</span><span class="max">2003</span>
+            <input type="range" min="1889" , max="2003" , value="1889" , step="1" , class="year-slider">
+        </label>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.2.1/chroma.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-statistics/1.0.1/simple_statistics.min.js"></script>
+
+
+    <script>
+        // map options
+        var options = {
+            center: [45, -111],
+            zoom: 6,
+            minZoom: 1,
+            maxZoom: 18,
+            dragging: true,
+            zoomControl: true
+        }
+
+        // create the Leaflet map
+        var map = L.map('map', options);
+        // request tiles and add to map
+
+        var dataLayer,
+            attribute = '1889';
+        
+        var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            subdomains: 'abcd',
+            minZoom: 0,
+            maxZoom: 18,
+            ext: 'png'
+        });
+        map.addLayer(tiles);
+
+        $.getJSON("data/fire_history_nrocky_1889_2003.geojson", function (data) {
+
+            dataLayer = L.geoJson(data, {
+                // calls the drawMap() function once    
+
+                style: function (feature) {
+                    // style counties with initial default path options
+
+                    return {
+
+                        color: 'red',
+
+                        weight: 1,
+
+                        fillOpacity: 0.5,
+
+                        fill: 'red'
+
+                    };
+
+                }
+
+                // Adds first layer to map
+            }).addTo(map);
+
+
+        });
+
+        //$.getJSON("data/cartodb_query.geojson", function (data) {
+
+        //  dataLayer = L.geoJson(data, {
+        // calls the drawMap() function once    
+
+        //    style: function (feature) {
+        // style counties with initial default path options
+
+        //      return {
+
+        //        color: 'green',
+
+        //      weight: 3,
+
+        //    fillOpacity: 0,
+
+
+
+        //};
+
+        //    }
+
+        // Adds first layer to map
+        //    }).addTo(map);
+
+
+        //    });
+    </script>
+
+</body>
+
+</html>
