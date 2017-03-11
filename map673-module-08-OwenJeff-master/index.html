@@ -37,7 +37,7 @@
         img {}
         
         #ui-controls {
-            width: 15%;
+            width: 50%;
             padding: 8px 25px 8px 15px;
             background: rgba(75, 75, 75, 0.8);
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -57,7 +57,6 @@
         .year-slider {
             width: 100%;
         }
-        
     </style>
 </head>
 
@@ -99,7 +98,7 @@
 
         var dataLayer,
             attribute = '1889';
-        
+
         var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
             attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
             subdomains: 'abcd',
@@ -109,30 +108,40 @@
         });
         map.addLayer(tiles);
 
-         $.getJSON("data/fire_history_nrocky_1889_2003.geojson", function (data) {
-            dataLayer = L.geoJson(data, {
+        $.getJSON("data/fire_history_nrocky_1889_2003.geojson", function (fire_year) {
+
+            var rates = [];
+
+            var breaks = chroma.limits(rates, 'q', 5);
+            // Declares main variable for breaking data into 5 color classes
+            var colorize = chroma.scale(chroma.brewer.OrRd).classes(breaks).mode('lab');
+            // Declares the colorize rule under the color variable
+            var color = colorize(20);
+
+            drawMap(fire_year, colorize, '1889');
+
+
+        });
+
+
+        function drawMap(fire_year, colorize, currentYear) {
+
+            dataLayer = L.geoJson(fire_year, {
                 // calls the drawMap() function once    
                 style: function (feature) {
-                    // style counties with initial default path options
-                    return {
-                        color: 'red',
-                        weight: 1,
-                        fillOpacity: 0.5,
-                        fill: 'red'
-                    };
-                }
-                // Adds first layer to map
+                        // style counties with initial default path options
+                        return {
+                            color: 'red',
+                            weight: 1,
+                            fillOpacity: 0.5,
+                            fill: 'red'
+                        };
+                    }
+                    // Adds first layer to map
             }).addTo(map);
-             
-             drawMap(data, '1889');
-             
-        });
-        
-        
-        function drawMap(data, currentYear) {
-            
+
             dataLayer.eachLayer(function (layer) {
-                
+
                 // Mouseover shows info about counties
                 dataLayer.on('mouseover', function () {
                     $(".info").show();
@@ -143,15 +152,72 @@
                 });
                 // shortcut reference for layer properties
                 var props = layer.feature.properties;
-                
+
+                layer.setStyle({
+                    fillColor: colorize(Number(props[currentYear]))
+                });
+
                 // assemble string sequence of info for tooltip
+                var tooltipInfo = "<b>" + props["atlas_sour"];
+                // bind a tooltip to layer with county-specific information
+                layer.bindTooltip(tooltipInfo, {
+                    sticky: true
+                });
+            });
+
+
+
+            createSliderUI(dataLayer, colorize);
+
+
+        }
+
+
+        function updateMap(fire_year, colorize, currentYear) {
+
+
+            // Makes loop through the breaks and colors for each year
+            dataLayer.eachLayer(function (layer) {
+                var props = layer.feature.properties;
+
+                layer.setStyle({
+                    fillColor: colorize(Number(props[currentYear]))
+                });
+
                 var tooltipInfo = "<b>" + props["fire_year"];
                 // bind a tooltip to layer with county-specific information
                 layer.bindTooltip(tooltipInfo, {
                     sticky: true
                 });
             });
-            
+
+
+        }
+
+        function createSliderUI(dataLayer, colorize) {
+            // Variable that puts slider on the bottom left corner of the map
+            var sliderControl = L.control({
+                position: 'bottomleft',
+            });
+            // Adds slider to map
+            sliderControl.onAdd = function (map) {
+                    // Declares slider as a variable and prevents map pan and zoom while using the slider
+                    var slider = L.DomUtil.get("ui-controls");
+                    L.DomEvent.disableScrollPropagation(slider);
+                    L.DomEvent.disableClickPropagation(slider);
+                    return slider;
+                }
+                // Calls the update map function once slider is moved though different years
+            sliderControl.addTo(map);
+            $(".year-slider")
+                .on("input change", function () {
+                    var currentYear = $(this).val();
+                    updateMap(dataLayer, colorize, currentYear);
+                    $('.legend h3 span').html(currentYear);
+
+                    console.log(currentYear);
+                });
+
         }
 
         //$.getJSON("data/cartodb_query.geojson", function (data) {
