@@ -109,33 +109,50 @@
         });
         map.addLayer(tiles);
 
-        $.getJSON("data/fire_history_nrocky_1889_2003.geojson", function (data) {
-
+         $.getJSON("data/fire_history_nrocky_1889_2003.geojson", function (data) {
             dataLayer = L.geoJson(data, {
                 // calls the drawMap() function once    
-
                 style: function (feature) {
                     // style counties with initial default path options
-
                     return {
-
                         color: 'red',
-
                         weight: 1,
-
                         fillOpacity: 0.5,
-
                         fill: 'red'
-
                     };
-
                 }
-
                 // Adds first layer to map
             }).addTo(map);
-
-
+             
+             drawMap(data, '1889');
+             
         });
+        
+        
+        function drawMap(data, currentYear) {
+            
+            dataLayer.eachLayer(function (layer) {
+                
+                // Mouseover shows info about counties
+                dataLayer.on('mouseover', function () {
+                    $(".info").show();
+                });
+                // Mouse out hides the information popup
+                dataLayer.on('mouseout', function () {
+                    $(".info").hide();
+                });
+                // shortcut reference for layer properties
+                var props = layer.feature.properties;
+                
+                // assemble string sequence of info for tooltip
+                var tooltipInfo = "<b>" + props["fire_year"];
+                // bind a tooltip to layer with county-specific information
+                layer.bindTooltip(tooltipInfo, {
+                    sticky: true
+                });
+            });
+            
+        }
 
         //$.getJSON("data/cartodb_query.geojson", function (data) {
 
