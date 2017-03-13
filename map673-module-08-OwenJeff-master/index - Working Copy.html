@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Us Forest Fires</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+    <style>
+        html,
+        body,
+        #map {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #slider {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            left: 40px;
+        }
+        
+        #legend {
+            font-family: serif;
+            font-size: 27px;
+            position: absolute;
+            bottom: 80px;
+            left: 40px;
+        }
+        
+        div.cartodb-legend-stack {
+            position: fixed;
+            right: 0px;
+            bottom: 15px;
+        }
+        
+        .cartodb-legend ul li {
+            margin-left: 5px;
+            font-size: 10px;
+        }
+        
+        .cartodb-legend img {
+            margin-left: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="slider"></div>
+    <div id="legend"></div>
+
+
+    <div class="cartodb-legend-stack">
+
+
+
+        <div class="cartodb-legend custom">
+
+            <div class="legend-title">Fires</div>
+
+            <div class='cartodb-legend density'>
+                <ul>
+                    <li class="min">
+                        Fire Severity
+                    </li>
+
+                    <li class="graph leg" style="border-radius: 0; border:none">
+                        <div class="colors">
+                            <div class="quartile" style="background-color:#ffc6c4"></div>
+                            <div class="quartile" style="background-color:#ee919b"></div>
+                            <div class="quartile" style="background-color:#cc607d"></div>
+                            <div class="quartile" style="background-color:#9e3963"></div>
+                            <div class="quartile" style="background-color:#672044"></div>
+                        </div>
+
+                    </li>
+                </ul>
+            </div>
+
+
+        </div>
+        
+    </div>
+
+
+        <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
+            #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
+        </script>
+
+
+        <script type="infowindow/html" id="fire_history_nrocky_1889_2003_1_template">
+            <div class="cartodb-popup">
+                <a href="#close" class="cartodb-popup-close-button close">x</a>
+                <div class="cartodb-popup-content-wrapper">
+                    <div class="cartodb-popup-content">
+                        <h4>Name</h4>
+                        <p>{{atlas_sour}}</p>
+                        <h4>Year</h4>
+                        <p>{{fire_year}}</p>
+                    </div>
+                </div>
+        </script>
+
+
+        <!-- include cartodb.js library -->
+        <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+        <script>
+            function changeLegend(start, end) {
+                $('#legend').html("US Forest Fire Years " + new Number(start) + " - " + new Number(end))
+            }
+
+            function addTimeSlider(sublayer) {
+                var sql = cartodb.SQL({
+                        user: 'owenjeff'
+                    })
+                    // fetch time range
+                sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
+                    var range = data.rows[0];
+                    var max = new Number(range.max)
+                    var min = new Number(range.min)
+                        // update slider with range
+                    $("#slider").slider({
+                        range: true,
+                        min: min,
+                        max: max,
+                        values: [min, (min + max) / 2],
+                        slide: function (event, ui) {
+                            // give feedback to the user on slide change
+                            changeLegend(ui.values[0], ui.values[1]);
+                        },
+                        stop: function (event, ui) {
+                            // when user selects the dates, update the layer with the range
+                            var start = new Number(ui.values[0])
+                            var end = new Number(ui.values[1])
+
+                            // build sql
+                            sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
+                        }
+                    });
+                    changeLegend(min, (min + max) / 2);
+                });
+            }
+
+            function main() {
+
+                var map = new L.Map('map', {
+                    zoomControl: true,
+                    center: [45, -111],
+                    zoom: 7
+                });
+
+                var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
+                    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                    subdomains: 'abcd',
+                    minZoom: 0,
+                    maxZoom: 18,
+                    ext: 'png'
+                });
+                map.addLayer(tiles);
+
+                var sourceObject = {
+                    user_name: 'owenjeff',
+                    type: 'cartodb',
+                    sublayers: [
+                        {
+                            // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
+                            sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
+                            // Uses css rules from cartoDB
+                            cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
+                            // Sets interactivity from cartoDB ID
+                            interactivity: 'cartodb_id'
+          },
+      ]
+                };
+
+
+                cartodb.createLayer(map, sourceObject, {
+                        legends: false
+                    })
+                    .addTo(map)
+                    .on('done', function (layer) {
+
+                        cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['atlas_sour', 'fire_year'], {
+                            // Calls up info window template from the html
+                            infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
+                        });
+
+
+                        addTimeSlider(layer.getSubLayer(0));
+                    }).on('error', function () {
+                        cartodb.log.log("some error occurred");
+                    });
+            }
+
+            // you could use $(window).load(main);
+            window.onload = main;
+        </script>
+</body>
+
+</html>
