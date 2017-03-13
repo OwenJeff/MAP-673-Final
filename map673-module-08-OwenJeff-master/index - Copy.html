@@ -11,7 +11,6 @@
 
     <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico">
 
-
     <style>
         html,
         body,
@@ -62,16 +61,13 @@
     <div id="map"></div>
 
     <div id="slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false">
-        <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 50%;"></div>
+        <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 100%;"></div>
         <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 0%;"></a>
-        <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 50%;"></a>
+        
     </div>
 
-    <div class="ui-slider-range ui-widget-header ui-corner-all" style="left: 0%; width: 50%;"></div>
 
-    <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 0%;"></a>
-
-    <a class="ui-slider-handle ui-state-default ui-corner-all" href="#" style="left: 50%;"></a>
+    <div id="legend"></div>
 
 
     <div class="cartodb-legend-stack">
@@ -110,19 +106,71 @@
     </div>
 
 
+    <script type="infowindow/html" id="fire_history_nrocky_1889_2003_1_template">
+        <div class="cartodb-popup">
+            <a href="#close" class="cartodb-popup-close-button close">x</a>
+            <div class="cartodb-popup-content-wrapper">
+                <div class="cartodb-popup-content">
+                    <h4>Name</h4>
+                    <p>{{atlas_sour}}</p>
+                    <h4>Year</h4>
+                    <p>{{fire_year}}</p>
+
+                </div>
+            </div>
+    </script>
+
 
 
 
     <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
-        #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; }
+        #layer { polygon-fill: ramp([fire_year], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 
 
     <script>
+        function changeLegend(start, end) {
+            $('#legend').html(new Number(start).getFullYear() + " - " + new Number(end).getFullYear())
+        }
+
+        function addTimeSlider(sublayer) {
+            var sql = cartodb.SQL({
+                    user: 'owenjeff'
+                })
+                // fetch time range
+            sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
+                var range = data.rows[0];
+                var max = new Number(range.max)
+                var min = new Number(range.min)
+                    // update slider with range
+
+
+                $("#slider").slider({
+                    range: true,
+                    min: min,
+                    max: max,
+                    values: [min, (min + max) / 2],
+                    change: function (event, ui) {
+                        // give feedback to the user on slide change
+                        changeLegend(ui.values[0], ui.values[1]);
+                    },
+                    stop: function (event, ui) {
+                        // when user selects the dates, update the layer with the range
+                        var start = new Number(ui.values[0]).toISOString()
+                        var end = new Number(ui.values[1]).toISOString();
+
+                        // build sql
+                        sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and year_year <= '" + end + "'");
+                    }
+                });
+                changeLegend(min, (min + max) / 2);
+            });
+        };
+
+
         // Draws map and centers it to zoom point
         var map = L.map('map', {
             center: [45, -111],
@@ -138,47 +186,6 @@
             ext: 'png'
         });
         map.addLayer(tiles);
-
-
-
-
-
-        function addTimeSlider(sublayer) {
-            var sql = cartodb.SQL({
-                    user: 'documentation'
-                })
-                // fetch time range
-            sql.execute('SELECT * FROM fire_history_nrocky_1889_2003_1', function (data) {
-                var range = data.rows[0];
-                var max = new Date(range.max).getTime()
-                var min = new Date(range.min).getTime()
-                    // update slider with range
-                $("#slider").slider({
-                    range: true,
-                    min: min,
-                    max: max,
-                    values: [min, (min + max) / 2],
-                    slide: function (event, ui) {
-                        // give feedback to the user on slide change
-                        changeLegend(ui.values[0], ui.values[1]);
-                    },
-                    stop: function (event, ui) {
-                        // when user selects the dates, update the layer with the range
-                        var start = new Date(ui.values[0]).toISOString()
-                        var end = new Date(ui.values[1]).toISOString();
-                        // build sql
-                        sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 >= '" + start + "' and year <= '" + end + "'");
-                    }
-                });
-            });
-        }
-
-
-
-
-
-
-
 
 
         // Adds CartoDB hosted web map
@@ -204,24 +211,13 @@
         // initiates function to create info windows with layer and vis set as parameters
         .done(function (layer, vis) {
 
-            // Does function to create hover info window in sublayer 1 and the same for sublayer 2
-            var sublayer = layer.getSubLayer(0);
-            // Passes 2 attributes to show up in info window
-            sublayer.setInteractivity('fire_year');
-            // This is the mouse hover function
-            layer.leafletMap.viz.addOverlay({
-                // Sets the type of info window that comes from hover function
-                type: 'tooltip',
-                // Sets window from the sublayer
-                layer: sublayer,
-                // Uses html template to draw text in info window
-                template: '<div class="cartodb-tooltip-content-wrapper"><div class="cartodb-tooltip-content">{{atlas_sour}}<br>{{fire_year}}</div>',
-                position: 'bottom|right',
-                // Uses name as the primary field for info window
-                fields: [{
-                    name: 'name'
-                        }]
+
+
+            cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['atlas_sour', 'fire_year'], {
+                // Calls up info window template from the html
+                infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
             });
+
 
             addTimeSlider(layer.getSubLayer(0));
 
