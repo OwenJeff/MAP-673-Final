@@ -2,38 +2,50 @@
 <html>
 
 <head>
-    <title>Us Forest Fires</title>
+    <title>NW US Forest Fires</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
     <style>
-        html,
-        body,
-        #map {
+        body {
+            left: 0px;
             height: 100%;
-            padding: 0;
-            margin: 0;
+            overflow: visible;
         }
         
+        #map {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            width: 75%;
+            padding: 0;
+            margin: 0;
+            background: 'white';
+            border-left: 1px solid red;
+        }
         #slider {
-            position: absolute;
+            position: fixed;
             bottom: 40px;
             right: 40px;
             left: 40px;
+            width: 64%;
+            margin-left: 350px;
         }
         
         #legend {
             font-family: serif;
             font-size: 27px;
-            position: absolute;
+            position: fixed;
             bottom: 80px;
             left: 40px;
+            margin-left: 350px;
         }
         
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
-            bottom: 15px;
+            bottom: 50px;
         }
         
         .cartodb-legend ul li {
@@ -44,15 +56,45 @@
         .cartodb-legend img {
             margin-left: 20px;
         }
+        img {
+            width: 95%;
+            height: 200px;
+        }
+        li,
+        h1,
+        h2,
+        p {
+            padding-right: 20px;
+            padding-left: 10px;
+            text-align: left;
+            font-family: sans-serif;
+        }
     </style>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 </head>
 
 <body>
+    
+    <div class='grid'>
+        <div id="left" style="float: left; width: 25%;">
+            <h1 class='txt-headline mb6-gray'>Northwest US History of Forest Fires</h1>
+            
+            <h2 class='txt-xl mt18-gray mb12-gray'>About This Map</h2>
+            <p>This map shows all the forest fires for the northwest United States.</p>
+            <footer class='mt12 bg-gray-faint txt-s'>
+                <ul>
+                    <li>Explore the raw data at <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=fsp5_030970#2'>United States Department of Agriculture</a></li>
+                    <li>Map authored by <a target='_blank' class='link' href='https://github.com/OwenJeff'>Owen Mickelson</a> on March 13,2017</li>
+                </ul>
+            </footer>
+        </div>
+    </div>
+    
+    
+    
+    
     <div id="map"></div>
-    <div id="slider"></div>
-    <div id="legend"></div>
 
 
     <div class="cartodb-legend-stack">
@@ -86,6 +128,13 @@
         </div>
         
     </div>
+    
+    
+    <div id="slider"></div>
+    
+    
+    
+    <div id="legend"></div>
 
 
         <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
@@ -153,7 +202,7 @@
                 var map = new L.Map('map', {
                     zoomControl: true,
                     center: [45, -111],
-                    zoom: 7
+                    zoom: 6
                 });
 
                 var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
