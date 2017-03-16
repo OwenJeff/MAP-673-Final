@@ -6,13 +6,16 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
+
+
     <style>
         body {
+            font-family: serif;
             left: 0px;
             height: 100%;
             overflow: visible;
         }
-
+        
         #map {
             position: fixed;
             top: 0;
@@ -24,26 +27,23 @@
             background: 'white';
             border-left: 1px solid red;
         }
-
+        
         #slider {
             position: fixed;
             bottom: 40px;
-            right: 40px;
-            left: 40px;
-            width: 64%;
-            margin-left: 350px;
+            right: 50px;
+            width: 65%;
         }
-
+        
         #legend {
             font-family: serif;
             font-size: 27px;
             position: fixed;
             bottom: 80px;
-            left: 40px;
-            margin-left: 350px;
-            width: 64%
+            width: 65%;
+            right: 55px;
         }
-
+        
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -51,21 +51,21 @@
             height: 120px;
             padding: 20px;
         }
-
+        
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
-
+        
         .cartodb-legend img {
             margin-left: 20px;
         }
-
+        
         img {
             width: 95%;
             height: 200px;
         }
-
+        
         li,
         h1,
         h2,
@@ -83,13 +83,15 @@
 
 <body>
 
-    <div class='grid'>
-        <div id="left" style="float: left; width: 25%;">
+
+
+    <div id="left" style="float: left; width: 25%;">
+        <div id="scrollBox" style="overflow:scroll; height: 650px; width: 99%;">
             <h1 class='txt-headline mb6-gray'>Northwest United States History of Forest Fires</h1>
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>- Click <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>here</a> to read about to 1988 Yellowstone National Park Fire and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. Out of all of these fires, the Yellowstone National Park Fire of 1988 has been one of the largest forest fires to scale in this region.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>Explore the raw data at <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=fsp5_030970#2'>United States Department of Agriculture</a></li>
@@ -97,14 +99,18 @@
                 </ul>
             </footer>
         </div>
+
     </div>
-
-
 
 
     <div id="map"></div>
 
 
+    <div id="slider"></div>
+
+
+
+    <div id="legend"></div>
 
 
 
@@ -144,13 +150,6 @@
 
 
 
-    <div id="slider"></div>
-
-
-
-    <div id="legend"></div>
-
-
     <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
         #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
@@ -173,7 +172,6 @@
     <!-- include cartodb.js library -->
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <!-- The jquery library has to be used, otherwise without it the entire functionality of the slider will break -->
 
     <script>
         function changeLegend(start, end) {
@@ -182,27 +180,28 @@
 
         function addTimeSlider(sublayer) {
             var sql = cartodb.SQL({
-                user: 'owenjeff'
-            })
-            // fetch time range
-            sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function(data) {
+                    user: 'owenjeff'
+                })
+                // fetch time range
+            sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
                 var range = data.rows[0];
                 var max = new Number(range.max)
                 var min = new Number(range.min)
-                // update slider with range
+                    // update slider with range
                 $("#slider").slider({
                     range: true,
                     min: 1889,
                     max: 2003,
                     values: [min, (min + max) / 2],
-                    slide: function(event, ui) {
+                    slide: function (event, ui) {
                         // give feedback to the user on slide change
                         changeLegend(ui.values[0], ui.values[1]);
                     },
-                    stop: function(event, ui) {
+                    stop: function (event, ui) {
                         // when user selects the dates, update the layer with the range
                         var start = new Number(ui.values[0])
                         var end = new Number(ui.values[1])
+
                         // build sql
                         sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
                     }
@@ -212,11 +211,13 @@
         }
 
         function main() {
+
             var map = new L.Map('map', {
                 zoomControl: true,
                 center: [45, -111],
                 zoom: 6
             });
+
             var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 subdomains: 'abcd',
@@ -225,32 +226,43 @@
                 ext: 'png'
             });
             map.addLayer(tiles);
+
             var sourceObject = {
                 user_name: 'owenjeff',
                 type: 'cartodb',
-                sublayers: [{
-                    // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                    sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
-                    // Uses css rules from cartoDB
-                    cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
-                    // Sets interactivity from cartoDB ID
-                    interactivity: 'cartodb_id'
-                }, ]
+                sublayers: [
+                    {
+                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
+                        sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
+                        // Uses css rules from cartoDB
+                        cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
+                        // Sets interactivity from cartoDB ID
+                        interactivity: 'cartodb_id'
+          },
+      ]
             };
+
+
             cartodb.createLayer(map, sourceObject, {
                     legends: false
                 })
                 .addTo(map)
-                .on('done', function(layer) {
+                .on('done', function (layer) {
+
                     cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['atlas_sour', 'fire_year'], {
                         // Calls up info window template from the html
                         infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
                     });
+
+
+
+
                     addTimeSlider(layer.getSubLayer(0));
-                }).on('error', function() {
+                }).on('error', function () {
                     cartodb.log.log("some error occurred");
                 });
         }
+
         // you could use $(window).load(main);
         window.onload = main;
     </script>
