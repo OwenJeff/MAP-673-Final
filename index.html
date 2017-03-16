@@ -12,7 +12,7 @@
             height: 100%;
             overflow: visible;
         }
-        
+
         #map {
             position: fixed;
             top: 0;
@@ -24,7 +24,7 @@
             background: 'white';
             border-left: 1px solid red;
         }
-        
+
         #slider {
             position: fixed;
             bottom: 40px;
@@ -33,7 +33,7 @@
             width: 64%;
             margin-left: 350px;
         }
-        
+
         #legend {
             font-family: serif;
             font-size: 27px;
@@ -43,7 +43,7 @@
             margin-left: 350px;
             width: 64%
         }
-        
+
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -51,21 +51,21 @@
             height: 120px;
             padding: 20px;
         }
-        
+
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
-        
+
         .cartodb-legend img {
             margin-left: 20px;
         }
-        
+
         img {
             width: 95%;
             height: 200px;
         }
-        
+
         li,
         h1,
         h2,
@@ -105,7 +105,7 @@
     <div id="map"></div>
 
 
-    
+
 
 
     <div class="cartodb-legend-stack">
@@ -132,16 +132,16 @@
                 <li>
                     <div class="bullet" style="background-color:#ffffb2;"></div>Mild</li>
 
-                
+
 
 
             </ul>
 
         </div>
 
-        
+
     </div>
-    
+
 
 
     <div id="slider"></div>
@@ -172,32 +172,32 @@
 
     <!-- include cartodb.js library -->
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
     <script>
         function changeLegend(start, end) {
             $('#legend').html("US Forest Fire Years " + new Number(start) + " - " + new Number(end))
         }
+
         function addTimeSlider(sublayer) {
             var sql = cartodb.SQL({
-                    user: 'owenjeff'
-                })
-                // fetch time range
-            sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
+                user: 'owenjeff'
+            })
+            // fetch time range
+            sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function(data) {
                 var range = data.rows[0];
                 var max = new Number(range.max)
                 var min = new Number(range.min)
-                    // update slider with range
+                // update slider with range
                 $("#slider").slider({
                     range: true,
                     min: 1889,
                     max: 2003,
                     values: [min, (min + max) / 2],
-                    slide: function (event, ui) {
+                    slide: function(event, ui) {
                         // give feedback to the user on slide change
                         changeLegend(ui.values[0], ui.values[1]);
                     },
-                    stop: function (event, ui) {
+                    stop: function(event, ui) {
                         // when user selects the dates, update the layer with the range
                         var start = new Number(ui.values[0])
                         var end = new Number(ui.values[1])
@@ -208,6 +208,7 @@
                 changeLegend(1889, 2003);
             });
         }
+
         function main() {
             var map = new L.Map('map', {
                 zoomControl: true,
@@ -225,28 +226,26 @@
             var sourceObject = {
                 user_name: 'owenjeff',
                 type: 'cartodb',
-                sublayers: [
-                    {
-                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
-                        // Uses css rules from cartoDB
-                        cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
-                        // Sets interactivity from cartoDB ID
-                        interactivity: 'cartodb_id'
-          },
-      ]
+                sublayers: [{
+                    // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
+                    sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
+                    // Uses css rules from cartoDB
+                    cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
+                    // Sets interactivity from cartoDB ID
+                    interactivity: 'cartodb_id'
+                }, ]
             };
             cartodb.createLayer(map, sourceObject, {
                     legends: false
                 })
                 .addTo(map)
-                .on('done', function (layer) {
+                .on('done', function(layer) {
                     cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['atlas_sour', 'fire_year'], {
                         // Calls up info window template from the html
                         infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
                     });
                     addTimeSlider(layer.getSubLayer(0));
-                }).on('error', function () {
+                }).on('error', function() {
                     cartodb.log.log("some error occurred");
                 });
         }
