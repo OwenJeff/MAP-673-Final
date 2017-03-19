@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Northwest United States History of Forest Fires</title>
+    <title>NW US Forest Fires</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico" />
@@ -17,7 +17,6 @@
         body {
             min-height: 100%;
         }
-        
         
         #map {
             position: fixed;
@@ -86,6 +85,36 @@
             height: 30%;
         }
         
+        #layer_selector {
+            position: fixed;
+            top: 200px;
+            right: 20px;
+            padding: 0;
+        }
+        
+        #layer_selector ul {
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
+        }
+        
+        #layer_selector li {
+            border-bottom: 1px solid #999;
+            padding: 15px 30px;
+            font-family: "Helvetica", Arial;
+            font-size: 13px;
+            color: #444;
+            cursor: auto;
+        }
+        
+        #layer_selector li:hover {
+            background-color: #F0F0F0;
+            cursor: pointer;
+        }
+        
+        #layer_selector li.selected {
+            background-color: #EEE;
+        }
     </style>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -103,7 +132,7 @@
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>- Click <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>here</a> to read about to 1988 Yellowstone National Park Fire and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. Out of all of these fires, the Yellowstone National Park Fire of 1988 has been one of the largest forest fires to scale in this region.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. Out of all of these fires, the Yellowstone National Park Fire of 1988 has been one of the largest forest fires to scale in this region. Also shown on this map are the locations of all the national parks and national forests within the region of the given fire data.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>Explore the raw data at <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=fsp5_030970#2'>United States Department of Agriculture</a></li>
@@ -124,6 +153,16 @@
 
 
     <div id="legend"></div>
+
+
+    <div id="layer_selector" class="cartodb-infobox">
+        <ul>
+            <li id="abc" style="color:turquoise;">Show Both</li>
+            <li id="efg" style="color:green;">National Parks</li>
+            <li id="hij" style="color:blue;">National Forests</li>
+            <li id="klm" style="color:black;">Show Neither</li>
+        </ul>
+    </div>
 
 
 
@@ -167,16 +206,44 @@
         #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
+    <script type="cartocss/html" id="national_parks_clipped-styles">
+        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #3a941e; line-opacity: 1; }
+    </script>
+
+    <script type="cartocss/html" id="administrative_boundaries_clipped-styles">
+        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #101594; line-opacity: 1; }
+    </script>
+
 
     <script type="infowindow/html" id="fire_history_nrocky_1889_2003_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
                 <div class="cartodb-popup-content">
-                    <h4>Name</h4>
-                    <p>{{atlas_sour}}</p>
-                    <h4>Year</h4>
+                    <h4>Fire Occurred Year:</h4>
                     <p>{{fire_year}}</p>
+                </div>
+            </div>
+    </script>
+
+    <script type="infowindow/html" id="national_parks_clipped_template">
+        <div class="cartodb-popup">
+            <a href="#close" class="cartodb-popup-close-button close">x</a>
+            <div class="cartodb-popup-content-wrapper">
+                <div class="cartodb-popup-content">
+                    <h4>National Park Name:</h4>
+                    <p>{{parkname}} {{designatio}}</p>
+                </div>
+            </div>
+    </script>
+
+    <script type="infowindow/html" id="administrative_boundaries_clipped_template">
+        <div class="cartodb-popup">
+            <a href="#close" class="cartodb-popup-close-button close">x</a>
+            <div class="cartodb-popup-content-wrapper">
+                <div class="cartodb-popup-content">
+                    <h4>National Forest Name:</h4>
+                    <p>{{forestname}}</p>
                 </div>
             </div>
     </script>
@@ -187,6 +254,45 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
     <script>
+        var selectedLayer;
+        // create layer selector
+        function createSelector(layers) {
+            var sql = new cartodb.SQL({
+                user: 'owenjeff'
+            });
+
+            var $options = $('#layer_selector li');
+            $options.click(function (e) {
+                // get the area of the selected layer
+                var $li = $(e.target);
+                var layer = $li.attr('id');
+                if (selectedLayer != layer) {
+                    // definitely more elegant ways to do this, but went for
+                    // ease of understanding
+                    if (layer == 'abc') {
+                        layers.getSubLayer(0).show(); // countries
+                        layers.getSubLayer(1).show(); // cables
+                        layers.getSubLayer(2).show(); // populated places
+                    } else if (layer == 'efg') {
+                        layers.getSubLayer(0).show();
+                        layers.getSubLayer(1).hide();
+                        layers.getSubLayer(2).show();
+                    } else if (layer == 'hij') {
+                        layers.getSubLayer(0).hide();
+                        layers.getSubLayer(1).show();
+                        layers.getSubLayer(2).show();
+                    } else {
+                        layers.getSubLayer(0).hide();
+                        layers.getSubLayer(1).hide();
+                        layers.getSubLayer(2).show();
+                    }
+                }
+            });
+        }
+
+        var layerN = {};
+
+
         function changeLegend(start, end) {
             $('#legend').html("US Forest Fire Years " + new Number(start) + " - " + new Number(end))
         }
@@ -231,6 +337,9 @@
                 zoom: 6
             });
 
+            // get the currently selected style
+            selectedStyle = $('li.selected').attr('id');
+
             var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
                 attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 subdomains: 'abcd',
@@ -244,6 +353,25 @@
                 user_name: 'owenjeff',
                 type: 'cartodb',
                 sublayers: [
+
+                    {
+                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
+                        sql: "SELECT * FROM national_parks_clipped",
+                        // Uses css rules from cartoDB
+                        cartocss: $("#national_parks_clipped-styles").text(),
+                        // Sets interactivity from cartoDB ID
+                        interactivity: 'cartodb_id'
+          },
+
+                    {
+                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
+                        sql: "SELECT * FROM administrative_boundaries_clipped",
+                        // Uses css rules from cartoDB
+                        cartocss: $("#administrative_boundaries_clipped-styles").text(),
+                        // Sets interactivity from cartoDB ID
+                        interactivity: 'cartodb_id'
+          },
+
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
@@ -252,6 +380,7 @@
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
           },
+
       ]
             };
 
@@ -260,17 +389,26 @@
                     legends: false
                 })
                 .addTo(map)
-                .on('done', function (layer) {
+                .on('done', function (layers) {
 
-                    cartodb.vis.Vis.addInfowindow(map, layer.getSubLayer(0), ['atlas_sour', 'fire_year'], {
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
                         // Calls up info window template from the html
                         infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
                     });
 
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#national_parks_clipped_template').text()
+                    });
 
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#administrative_boundaries_clipped_template').text()
+                    });
 
+                    createSelector(layers);
 
-                    addTimeSlider(layer.getSubLayer(0));
+                    addTimeSlider(layers.getSubLayer(2));
                 }).on('error', function () {
                     cartodb.log.log("some error occurred");
                 });
