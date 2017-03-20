@@ -28,7 +28,7 @@
             padding: 0;
             margin: 0;
             background: 'white';
-            border-left: 3px solid red;
+            border-left: 3px solid darkred;
         }
         
         #slider {
@@ -36,15 +36,17 @@
             bottom: 40px;
             right: 50px;
             width: 65%;
+            color: red;
         }
         
         #legend {
-            font-family: serif;
+            font-family: cursive;
             font-size: 27px;
             position: fixed;
             bottom: 80px;
-            width: 65%;
-            right: 55px;
+            width: 29%;
+            right: 40%;
+            background: coral;
         }
         
         div.cartodb-legend-stack {
@@ -76,7 +78,7 @@
             padding-right: 20px;
             padding-left: 10px;
             text-align: left;
-            font-family: sans-serif;
+            font-family: cursive;
         }
         
         div.grid {
@@ -101,7 +103,7 @@
         #layer_selector li {
             border-bottom: 1px solid #999;
             padding: 15px 30px;
-            font-family: "Helvetica", Arial;
+            font-family: cursive;
             font-size: 13px;
             color: #444;
             cursor: auto;
@@ -128,11 +130,11 @@
     <div class="grid">
         <div style=" width:99%; height: 325%; overflow:scroll; overflow-y:scroll; overflow-x:hidden;">
 
-            <h1 class='txt-headline mb6-gray'>Northwest United States History of Forest Fires</h1>
+            <h1 class='txt-headline mb6-gray' style='color:darkred;'>Northwest United States History of Forest Fires</h1>
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>- Click <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>here</a> to read about to 1988 Yellowstone National Park Fire and its biological succession.</p>
-            <h2 class='txt-xl mt18-gray mb12-gray'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This fire data can be filtered by a year or range of years occurred. Out of all of these fires, the Yellowstone National Park Fire of 1988 has been one of the largest forest fires to scale in this region. Also shown on this map are the locations of all the national parks and national forests within the region of the given fire data. Those layers may be toggled on and off. </p>
+            <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows all the national parks and forests within the area of all these fires occurred. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and <a target='_blank' class='link' href='https://catalog.data.gov/dataset/national-park-boundariesf0a4c'>data.gov</a></li>
@@ -168,9 +170,9 @@
 
     <div class="cartodb-legend-stack">
 
-        <div class="cartodb-legend custom">
+        <div class="cartodb-legend custom" style="font-family:cursive;">
 
-            <div class="legend-title">Fire Severity</div>
+            <div class="legend-title">Fire Intensity</div>
 
             <ul>
 
@@ -206,11 +208,11 @@
         #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
-    <script type="cartocss/html" id="national_parks_clipped-styles">
+    <script type="cartocss/html" id="national_parks_clipped_1-styles">
         #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #3a941e; line-opacity: 1; }
     </script>
 
-    <script type="cartocss/html" id="administrative_boundaries_clipped-styles">
+    <script type="cartocss/html" id="administrative_boundaries_clipped_1-styles">
         #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #101594; line-opacity: 1; }
     </script>
 
@@ -220,29 +222,26 @@
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
                 <div class="cartodb-popup-content">
-                    <h4>Fire Occurred Year:</h4>
-                    <p>{{fire_year}}</p>
+                    <p>This Fire Occurred In {{fire_year}}</p>
                 </div>
             </div>
     </script>
 
-    <script type="infowindow/html" id="national_parks_clipped_template">
+    <script type="infowindow/html" id="national_parks_clipped_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
                 <div class="cartodb-popup-content">
-                    <h4>National Park Name:</h4>
                     <p>{{parkname}} {{designatio}}</p>
                 </div>
             </div>
     </script>
 
-    <script type="infowindow/html" id="administrative_boundaries_clipped_template">
+    <script type="infowindow/html" id="administrative_boundaries_clipped_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
                 <div class="cartodb-popup-content">
-                    <h4>National Forest Name:</h4>
                     <p>{{forestname}}</p>
                 </div>
             </div>
@@ -294,7 +293,7 @@
 
 
         function changeLegend(start, end) {
-            $('#legend').html("US Forest Fire Years " + new Number(start) + " - " + new Number(end))
+            $('#legend').html("Forest Fire Years " + new Number(start) + " - " + new Number(end))
         }
 
         function addTimeSlider(sublayer) {
@@ -356,18 +355,18 @@
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM national_parks_clipped",
+                        sql: "SELECT * FROM national_parks_clipped_1",
                         // Uses css rules from cartoDB
-                        cartocss: $("#national_parks_clipped-styles").text(),
+                        cartocss: $("#national_parks_clipped_1-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
           },
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM administrative_boundaries_clipped",
+                        sql: "SELECT * FROM administrative_boundaries_clipped_1",
                         // Uses css rules from cartoDB
-                        cartocss: $("#administrative_boundaries_clipped-styles").text(),
+                        cartocss: $("#administrative_boundaries_clipped_1-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
           },
@@ -398,12 +397,12 @@
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_clipped_template').text()
+                        infowindowTemplate: $('#national_parks_clipped_1_template').text()
                     });
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_clipped_template').text()
+                        infowindowTemplate: $('#administrative_boundaries_clipped_1_template').text()
                     });
 
                     createSelector(layers);
