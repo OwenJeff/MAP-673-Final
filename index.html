@@ -134,7 +134,7 @@
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>- Click <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>here</a> to read about to 1988 Yellowstone National Park Fire and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows all the national parks and forests within the area of all these fires occurred. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows all the national parks and forests within the area of all these fires occurred. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and <a target='_blank' class='link' href='https://catalog.data.gov/dataset/national-park-boundariesf0a4c'>data.gov</a></li>
@@ -208,11 +208,11 @@
         #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
-    <script type="cartocss/html" id="national_parks_clipped_1-styles">
+    <script type="cartocss/html" id="national_parks_fixed-styles">
         #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #3a941e; line-opacity: 1; }
     </script>
 
-    <script type="cartocss/html" id="administrative_boundaries_clipped_1-styles">
+    <script type="cartocss/html" id="administrative_boundaries_fixed-styles">
         #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #101594; line-opacity: 1; }
     </script>
 
@@ -227,7 +227,7 @@
             </div>
     </script>
 
-    <script type="infowindow/html" id="national_parks_clipped_1_template">
+    <script type="infowindow/html" id="national_parks_fixed_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
@@ -237,7 +237,7 @@
             </div>
     </script>
 
-    <script type="infowindow/html" id="administrative_boundaries_clipped_1_template">
+    <script type="infowindow/html" id="administrative_boundaries_fixed_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
@@ -355,18 +355,18 @@
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM national_parks_clipped_1",
+                        sql: "SELECT * FROM national_parks_fixed",
                         // Uses css rules from cartoDB
-                        cartocss: $("#national_parks_clipped_1-styles").text(),
+                        cartocss: $("#national_parks_fixed-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
           },
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM administrative_boundaries_clipped_1",
+                        sql: "SELECT * FROM administrative_boundaries_fixed",
                         // Uses css rules from cartoDB
-                        cartocss: $("#administrative_boundaries_clipped_1-styles").text(),
+                        cartocss: $("#administrative_boundaries_fixed-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
           },
@@ -397,12 +397,12 @@
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_clipped_1_template').text()
+                        infowindowTemplate: $('#national_parks_fixed_template').text()
                     });
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_clipped_1_template').text()
+                        infowindowTemplate: $('#administrative_boundaries_fixed_template').text()
                     });
 
                     createSelector(layers);
