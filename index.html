@@ -13,11 +13,11 @@
             overflow-y: hidden;
             height: 99%;
         }
-        
+
         body {
             min-height: 100%;
         }
-        
+
         #map {
             position: fixed;
             top: 0;
@@ -30,7 +30,7 @@
             background: 'white';
             border-left: 3px solid darkred;
         }
-        
+
         #slider {
             position: fixed;
             bottom: 40px;
@@ -38,7 +38,7 @@
             width: 65%;
             color: red;
         }
-        
+
         #legend {
             font-family: cursive;
             font-size: 27px;
@@ -48,7 +48,7 @@
             right: 40%;
             background: coral;
         }
-        
+
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -56,21 +56,21 @@
             height: 120px;
             padding: 20px;
         }
-        
+
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
-        
+
         .cartodb-legend img {
             margin-left: 20px;
         }
-        
+
         img {
             width: 95%;
             height: 35%;
         }
-        
+
         li,
         h1,
         h2,
@@ -80,26 +80,26 @@
             text-align: left;
             font-family: cursive;
         }
-        
+
         div.grid {
             position: fixed;
             width: 24.5%;
             height: 30%;
         }
-        
+
         #layer_selector {
             position: fixed;
             top: 200px;
             right: 20px;
             padding: 0;
         }
-        
+
         #layer_selector ul {
             padding: 0;
             margin: 0;
             list-style-type: none;
         }
-        
+
         #layer_selector li {
             border-bottom: 1px solid #999;
             padding: 15px 30px;
@@ -108,12 +108,12 @@
             color: #444;
             cursor: auto;
         }
-        
+
         #layer_selector li:hover {
             background-color: #F0F0F0;
             cursor: pointer;
         }
-        
+
         #layer_selector li.selected {
             background-color: #EEE;
         }
@@ -302,6 +302,7 @@
                 })
                 // fetch time range
             sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
+                console.log(data)
                 var range = data.rows[0];
                 var max = new Number(range.max)
                 var min = new Number(range.min)
@@ -310,15 +311,17 @@
                     range: true,
                     min: 1889,
                     max: 2003,
-                    values: [min, (min + max) / 2],
+                    values: [1889, 2003],
                     slide: function (event, ui) {
                         // give feedback to the user on slide change
                         changeLegend(ui.values[0], ui.values[1]);
                     },
                     stop: function (event, ui) {
                         // when user selects the dates, update the layer with the range
-                        var start = new Number(ui.values[0])
-                        var end = new Number(ui.values[1])
+                        var start = ui.values[0]
+                        var end = ui.values[1]
+
+                        console.log(start, end)
 
                         // build sql
                         sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
