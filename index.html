@@ -162,10 +162,10 @@
 
     <div id="layer_selector" class="cartodb-infobox">
         <ul>
-            <li id="abc" style="color:turquoise;">Show Both</li>
-            <li id="efg" style="color:green;">National Parks</li>
-            <li id="hij" style="color:blue;">National Forests</li>
-            <li id="klm" style="color:black;">Hide Both</li>
+            <li id="show-both" style="color:turquoise;">Show Both</li>
+            <li id="national-parks" style="color:green;">National Parks</li>
+            <li id="national-forests" style="color:blue;">National Forests</li>
+            <li id="hide-both" style="color:black;">Hide Both</li>
         </ul>
     </div>
 
@@ -208,7 +208,7 @@
 
 
     <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
-        #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0.5; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
+        #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
     <script type="cartocss/html" id="national_parks_fixed-styles">
@@ -310,6 +310,34 @@
                 ]
             };
 
+            cartodb.createLayer(map, sourceObject, {
+                    legends: false
+                })
+                .addTo(map)
+                .on('done', function(layers) {
+
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
+                    });
+
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#national_parks_fixed_template').text()
+                    });
+
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#administrative_boundaries_fixed_template').text()
+                    });
+
+                    createSelector(layers);
+
+                    addTimeSlider(layers.getSubLayer(2));
+                }).on('error', function() {
+                    cartodb.log.log("some error occurred");
+                });
+
             var selectedLayer;
             // create layer selector
             function createSelector(layers) {
@@ -317,27 +345,28 @@
                     user: 'owenjeff'
                 });
 
-                var $options = $('#layer_selector li');
-                $options.click(function(e) {
+
+                $('#layer_selector li').click(function(e) {
                     // get the area of the selected layer
-                    var $li = $(e.target);
-                    var layer = $li.attr('id');
+
+                    var layer = $(e.target).attr('id');
+                    console.log(layer)
                     if (selectedLayer != layer) {
                         // definitely more elegant ways to do this, but went for
                         // ease of understanding
-                        if (layer == 'abc') {
+                        if (layer == 'show-both') {
                             layers.getSubLayer(0).show(); // countries
                             layers.getSubLayer(1).show(); // cables
                             layers.getSubLayer(2).show(); // populated places
-                        } else if (layer == 'efg') {
+                        } else if (layer == 'national-parks') {
                             layers.getSubLayer(0).show();
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
-                        } else if (layer == 'hij') {
+                        } else if (layer == 'nationa-forests') {
                             layers.getSubLayer(0).hide();
                             layers.getSubLayer(1).show();
                             layers.getSubLayer(2).show();
-                        } else {
+                        } else if (layer == 'hide-both'){
                             layers.getSubLayer(0).hide();
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
@@ -377,9 +406,7 @@
                             var end = ui.values[1]
 
                             // build sql
-                            sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'", function(d) {
-                                console.log(d)
-                            });
+                            sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
                         }
                     });
                     changeLegend(1889, 2003);
@@ -387,34 +414,8 @@
             }
 
 
-            cartodb.createLayer(map, sourceObject, {
-                    legends: false
-                })
-                .addTo(map)
-                .on('done', function(layers) {
 
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
-                    });
 
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_fixed_template').text()
-                    });
-
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_fixed_template').text()
-                    });
-
-                    createSelector(layers);
-
-                    addTimeSlider(layers.getSubLayer(2));
-                }).on('error', function() {
-                    cartodb.log.log("some error occurred");
-                });
-                
         })(); // all custom code ends here
     </script>
 </body>
