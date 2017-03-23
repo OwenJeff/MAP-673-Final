@@ -127,6 +127,27 @@
             padding: 5px;
             background: coral;
         }
+        
+        #loader {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(245, 245, 245, 0.7);
+            z-index: 200;
+        }
+        
+/*       since we know the height/width of the loader gif, 
+         position absolutely and use top/left, subtracting half of 
+         width and heigth using margin */
+        #loader img {
+            width: 66px;
+            height: 66px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -33px 0 0 -33px;
+        }
     </style>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
@@ -139,6 +160,7 @@
         <div style=" width:99%; height: 325%; overflow:scroll; overflow-y:scroll; overflow-x:hidden;">
 
             <h1 class='txt-headline mb6-gray' style='color:darkred;'>Northwest United States History of Forest Fires</h1>
+            <h2 style='color:red;'>(Map Data May Take a Few Moments to Load)</h2>
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
@@ -185,7 +207,6 @@
         <select id='selector'>
             <option value='OSM'>Topographic Base Map</option>
             <option value='stamen'>Dark Base Map</option>
-
         </select>
 
     </div>
@@ -281,6 +302,7 @@
                 center: [45, -111],
                 zoom: 6
             });
+            
 
             // get the currently selected style
             selectedStyle = $('li.selected').attr('id');
@@ -361,7 +383,6 @@
                     createSelector(layers);
 
                     addTimeSlider(layers.getSubLayer(2));
-
 
 
                     layers.setZIndex(9000);
