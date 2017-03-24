@@ -17,7 +17,7 @@
         
         body {
             min-height: 100%;
-            font-family: 'Cormorant', serif;
+            font-family: 'Fira Sans', sans-serif;
         }
         
         #map {
@@ -45,8 +45,8 @@
             font-size: 27px;
             position: fixed;
             bottom: 80px;
-            width: 22%;
-            right: 46%;
+            width: 26%;
+            right: 42%;
             background: coral;
             padding: 5px;
         }
@@ -193,10 +193,8 @@
 
     <div id="layer_selector" class="cartodb-infobox">
         <ul>
-            <li id="show-both" style="color:turquoise;">Show Both</li>
-            <li id="national-parks" style="color:green;">National Parks</li>
-            <li id="national-forests" style="color:blue;">National Forests</li>
-            <li id="hide-both" style="color:black;">Hide Both</li>
+            <li id="show" style="color:#7cfc00;">Show Recreation</li>
+            <li id="hide" style="color:black;">Hide Recreation</li>
         </ul>
     </div>
 
@@ -205,8 +203,8 @@
 
     <div id='selector_menu'>
         <select id='selector'>
-            <option value='OSM'>Topographic Base Map</option>
-            <option value='stamen'>Gray Scale Base Map</option>
+            <option value='topo'>Topographic Base Map</option>
+            <option value='gray'>Gray Scale Base Map</option>
         </select>
 
     </div>
@@ -247,20 +245,20 @@
 
 
 
-    <script type="cartocss/html" id="fire_history_nrocky_1889_2003_1-styles">
+    <script type="cartocss/html" id="fire_history_1-styles">
         #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
-    <script type="cartocss/html" id="national_parks_fixed-styles">
-        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #3a941e; line-opacity: 1; }
+    <script type="cartocss/html" id="national_parks_1-styles">
+        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #7cfc00; line-opacity: 1; }
     </script>
 
-    <script type="cartocss/html" id="administrative_boundaries_fixed-styles">
-        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #101594; line-opacity: 1; }
+    <script type="cartocss/html" id="administrative_boundaries_1-styles">
+        #layer { polygon-fill: #ffb927; polygon-opacity: 0; line-width: 2; line-color: #7cfc00; line-opacity: 1; }
     </script>
 
 
-    <script type="infowindow/html" id="fire_history_nrocky_1889_2003_1_template">
+    <script type="infowindow/html" id="fire_history_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
@@ -270,7 +268,7 @@
             </div>
     </script>
 
-    <script type="infowindow/html" id="national_parks_fixed_template">
+    <script type="infowindow/html" id="national_parks_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
@@ -280,7 +278,7 @@
             </div>
     </script>
 
-    <script type="infowindow/html" id="administrative_boundaries_fixed_template">
+    <script type="infowindow/html" id="administrative_boundaries_1_template">
         <div class="cartodb-popup">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
             <div class="cartodb-popup-content-wrapper">
@@ -326,27 +324,27 @@
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM national_parks_fixed",
+                        sql: "SELECT * FROM national_parks_1",
                         // Uses css rules from cartoDB
-                        cartocss: $("#national_parks_fixed-styles").text(),
+                        cartocss: $("#national_parks_1-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM administrative_boundaries_fixed",
+                        sql: "SELECT * FROM administrative_boundaries_1",
                         // Uses css rules from cartoDB
-                        cartocss: $("#administrative_boundaries_fixed-styles").text(),
+                        cartocss: $("#administrative_boundaries_1-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
 
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
-                        sql: "SELECT * FROM fire_history_nrocky_1889_2003_1",
+                        sql: "SELECT * FROM fire_history_1",
                         // Uses css rules from cartoDB
-                        cartocss: $("#fire_history_nrocky_1889_2003_1-styles").text(),
+                        cartocss: $("#fire_history_1-styles").text(),
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
@@ -362,17 +360,17 @@
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#fire_history_nrocky_1889_2003_1_template').text()
+                        infowindowTemplate: $('#fire_history_1_template').text()
                     });
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_fixed_template').text()
+                        infowindowTemplate: $('#national_parks_1_template').text()
                     });
 
                     cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
                         // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_fixed_template').text()
+                        infowindowTemplate: $('#administrative_boundaries_1_template').text()
                     });
 
                     createSelector(layers);
@@ -383,7 +381,7 @@
                     layers.setZIndex(9000);
                     // define basemap options
                     var LayerActions = {
-                        OSM: function () {
+                        topo: function () {
                             // if map_object has already a basemap, remove it and add a new one
                             if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
                                 map.removeLayer(tiles);
@@ -394,7 +392,7 @@
                             return true;
                         },
                         // if map_object has already a basemap, remove it and add a new one
-                        stamen: function () {
+                        gray: function () {
                             if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
                                 map.removeLayer(tiles);
                                 map.removeLayer(tiles1);
@@ -429,23 +427,15 @@
                     if (selectedLayer != layer) {
                         // definitely more elegant ways to do this, but went for
                         // ease of understanding
-                        if (layer == 'show-both') {
+                        if (layer == 'show') {
                             layers.getSubLayer(0).show(); // countries
                             layers.getSubLayer(1).show(); // cables
                             layers.getSubLayer(2).show(); // populated places
-                        } else if (layer == 'national-parks') {
-                            layers.getSubLayer(0).show();
-                            layers.getSubLayer(1).hide();
-                            layers.getSubLayer(2).show();
-                        } else if (layer == 'national-forests') {
-                            layers.getSubLayer(0).hide();
-                            layers.getSubLayer(1).show();
-                            layers.getSubLayer(2).show();
-                        } else if (layer == 'hide-both') {
+                        } else if (layer == 'hide') {
                             layers.getSubLayer(0).hide();
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
-                        }
+                        } 
                     }
                 });
             }
