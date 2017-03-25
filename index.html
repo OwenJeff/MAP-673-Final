@@ -14,10 +14,12 @@
             overflow-y: hidden;
             height: 99%;
         }
+        
         body {
             min-height: 100%;
             font-family: 'Fira Sans', sans-serif;
         }
+        
         #map {
             position: fixed;
             top: 0;
@@ -30,6 +32,7 @@
             background: 'white';
             border-left: 3px solid darkred;
         }
+        
         #slider {
             position: fixed;
             bottom: 40px;
@@ -37,6 +40,7 @@
             width: 65%;
             color: red;
         }
+        
         #legend {
             font-size: 27px;
             position: fixed;
@@ -46,6 +50,7 @@
             background: coral;
             padding: 5px;
         }
+        
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -53,17 +58,21 @@
             height: 120px;
             padding: 20px;
         }
+        
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
+        
         .cartodb-legend img {
             margin-left: 20px;
         }
+        
         img {
             width: 95%;
             height: 35%;
         }
+        
         li,
         h1,
         h2,
@@ -72,11 +81,13 @@
             padding-left: 10px;
             text-align: left;
         }
+        
         div.grid {
             position: fixed;
             width: 24.5%;
             height: 30%;
         }
+        
         #layer_selector {
             position: fixed;
             top: 200px;
@@ -84,11 +95,13 @@
             padding: 0;
             font-family: 'Fira Sans', sans-serif;
         }
+        
         #layer_selector ul {
             padding: 0;
             margin: 0;
             list-style-type: none;
         }
+        
         #layer_selector li {
             border-bottom: 1px solid #999;
             padding: 15px 30px;
@@ -96,13 +109,16 @@
             color: #444;
             cursor: auto;
         }
+        
         #layer_selector li:hover {
             background-color: #F0F0F0;
             cursor: pointer;
         }
+        
         #layer_selector li.selected {
             background-color: #EEE;
         }
+        
         #selector_menu {
             position: fixed;
             top: 10px;
@@ -111,6 +127,7 @@
             padding: 5px;
             background: coral;
         }
+        
         #loader {
             text-align: center;
             position: absolute;
@@ -124,6 +141,7 @@
         /*       since we know the height/width of the loader gif,
          position absolutely and use top/left, subtracting half of
          width and heigth using margin */
+        
         #loader img {
             width: 66px;
             height: 66px;
@@ -302,7 +320,6 @@
             var sourceObject = {
                 user_name: 'owenjeff',
                 type: 'cartodb',
-                https: 'true',
                 sublayers: [
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
@@ -331,52 +348,52 @@
                 ]
             };
             cartodb.createLayer(map, sourceObject, {
-                    legends: false
+                    https: true
                 })
                 .addTo(map)
-            .on('done', function (layers) {
-                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
-                    // Calls up info window template from the html
-                    infowindowTemplate: $('#fire_history_1_template').text()
-                });
-                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
-                    // Calls up info window template from the html
-                    infowindowTemplate: $('#national_parks_1_template').text()
-                });
-                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
-                    // Calls up info window template from the html
-                    infowindowTemplate: $('#administrative_boundaries_1_template').text()
-                });
-                createSelector(layers);
-                addTimeSlider(layers.getSubLayer(2));
-                layers.setZIndex(9000);
-                // define basemap options
-                var LayerActions = {
-                    topo: function () {
+                .on('done', function (layers) {
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#fire_history_1_template').text()
+                    });
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#national_parks_1_template').text()
+                    });
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
+                        // Calls up info window template from the html
+                        infowindowTemplate: $('#administrative_boundaries_1_template').text()
+                    });
+                    createSelector(layers);
+                    addTimeSlider(layers.getSubLayer(2));
+                    layers.setZIndex(9000);
+                    // define basemap options
+                    var LayerActions = {
+                        topo: function () {
+                            // if map_object has already a basemap, remove it and add a new one
+                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                                map.removeLayer(tiles);
+                                map.removeLayer(tiles1);
+                            }
+                            map.addLayer(tiles);
+                            return true;
+                        },
                         // if map_object has already a basemap, remove it and add a new one
-                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                            map.removeLayer(tiles);
-                            map.removeLayer(tiles1);
+                        gray: function () {
+                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                                map.removeLayer(tiles);
+                                map.removeLayer(tiles1);
+                            }
+                            map.addLayer(tiles1);
+                            return true;
                         }
-                        map.addLayer(tiles);
-                        return true;
-                    },
-                    // if map_object has already a basemap, remove it and add a new one
-                    gray: function () {
-                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                            map.removeLayer(tiles);
-                            map.removeLayer(tiles1);
-                        }
-                        map.addLayer(tiles1);
-                        return true;
                     }
-                }
-                $('#selector').change(function () {
-                    LayerActions[$(this).val()]();
+                    $('#selector').change(function () {
+                        LayerActions[$(this).val()]();
+                    });
+                }).on('error', function () {
+                    cartodb.log.log("some error occurred");
                 });
-            }).on('error', function () {
-                cartodb.log.log("some error occurred");
-            });
             var selectedLayer;
             // create layer selector
             function createSelector(layers) {
@@ -404,14 +421,16 @@
                     }
                 });
             }
+
             function changeLegend(start, end) {
                 $('#legend').html("Forest Fire Years " + new Number(start) + " - " + new Number(end))
             }
+
             function addTimeSlider(sublayer) {
                 var sql = cartodb.SQL({
-                    user: 'owenjeff'
-                })
-                // fetch time range
+                        user: 'owenjeff'
+                    })
+                    // fetch time range
                 sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
                     var range = data.rows[0];
                     var max = new Number(range.max)
@@ -422,17 +441,17 @@
                         min: 1889,
                         max: 2003,
                         values: [1889, 2003],
-                        
+
                         slide: function (event, ui) {
                             // give feedback to the user on slide change
                             changeLegend(ui.values[0], ui.values[1]);
                         },
                         stop: function (event, ui) {
                             $('#loader').show()
-                            // when user selects the dates, update the layer with the range
+                                // when user selects the dates, update the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
-                            // build sql
+                                // build sql
                             sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
                             $('#loader').delay(5000).fadeOut();
                         }
