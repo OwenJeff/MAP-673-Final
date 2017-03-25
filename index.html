@@ -14,12 +14,12 @@
             overflow-y: hidden;
             height: 99%;
         }
-        
+
         body {
             min-height: 100%;
             font-family: 'Fira Sans', sans-serif;
         }
-        
+
         #map {
             position: fixed;
             top: 0;
@@ -32,7 +32,7 @@
             background: 'white';
             border-left: 3px solid darkred;
         }
-        
+
         #slider {
             position: fixed;
             bottom: 40px;
@@ -40,7 +40,7 @@
             width: 65%;
             color: red;
         }
-        
+
         #legend {
             font-size: 27px;
             position: fixed;
@@ -50,7 +50,7 @@
             background: coral;
             padding: 5px;
         }
-        
+
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -58,21 +58,21 @@
             height: 120px;
             padding: 20px;
         }
-        
+
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
-        
+
         .cartodb-legend img {
             margin-left: 20px;
         }
-        
+
         img {
             width: 95%;
             height: 35%;
         }
-        
+
         li,
         h1,
         h2,
@@ -81,13 +81,13 @@
             padding-left: 10px;
             text-align: left;
         }
-        
+
         div.grid {
             position: fixed;
             width: 24.5%;
             height: 30%;
         }
-        
+
         #layer_selector {
             position: fixed;
             top: 200px;
@@ -95,13 +95,13 @@
             padding: 0;
             font-family: 'Fira Sans', sans-serif;
         }
-        
+
         #layer_selector ul {
             padding: 0;
             margin: 0;
             list-style-type: none;
         }
-        
+
         #layer_selector li {
             border-bottom: 1px solid #999;
             padding: 15px 30px;
@@ -109,16 +109,16 @@
             color: #444;
             cursor: auto;
         }
-        
+
         #layer_selector li:hover {
             background-color: #F0F0F0;
             cursor: pointer;
         }
-        
+
         #layer_selector li.selected {
             background-color: #EEE;
         }
-        
+
         #selector_menu {
             position: fixed;
             top: 10px;
@@ -127,7 +127,7 @@
             padding: 5px;
             background: coral;
         }
-        
+
         #loader {
             text-align: center;
             position: absolute;
@@ -138,10 +138,10 @@
             background-color: rgba(245, 245, 245, 0.7);
             z-index: 200;
         }
-        /*       since we know the height/width of the loader gif, 
-         position absolutely and use top/left, subtracting half of 
+        /*       since we know the height/width of the loader gif,
+         position absolutely and use top/left, subtracting half of
          width and heigth using margin */
-        
+
         #loader img {
             width: 66px;
             height: 66px;
@@ -496,23 +496,24 @@
                         min: 1889,
                         max: 2003,
                         values: [1889, 2003],
+                        start: function(event, ui){
+                            $('#loader').show()
+                        },
                         slide: function (event, ui) {
-
                             // give feedback to the user on slide change
                             changeLegend(ui.values[0], ui.values[1]);
                         },
-
-
                         stop: function (event, ui) {
 
-                            $('#loader').show();
+
                             // when user selects the dates, update the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
 
-                            $('#loader').delay(5000).fadeOut();
+
                             // build sql
                             sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
+                            $('#loader').delay(5000).fadeOut();
                         }
 
 
