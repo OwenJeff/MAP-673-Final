@@ -496,16 +496,14 @@
                         min: 1889,
                         max: 2003,
                         values: [1889, 2003],
-                        start: function(event, ui){
-                            $('#loader').show()
-                        },
+                        
                         slide: function (event, ui) {
                             // give feedback to the user on slide change
                             changeLegend(ui.values[0], ui.values[1]);
                         },
                         stop: function (event, ui) {
 
-
+                            $('#loader').show()
                             // when user selects the dates, update the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
