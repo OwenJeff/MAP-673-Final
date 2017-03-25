@@ -129,17 +129,19 @@
         }
         
         #loader {
+            text-align: center;
             position: absolute;
             top: 0;
             bottom: 0;
-            width: 100%;
+            right: 0;
+            width: 75%;
             background-color: rgba(245, 245, 245, 0.7);
             z-index: 200;
         }
-        
-/*       since we know the height/width of the loader gif, 
+        /*       since we know the height/width of the loader gif, 
          position absolutely and use top/left, subtracting half of 
          width and heigth using margin */
+        
         #loader img {
             width: 66px;
             height: 66px;
@@ -160,7 +162,6 @@
         <div style=" width:99%; height: 325%; overflow:scroll; overflow-y:scroll; overflow-x:hidden;">
 
             <h1 class='txt-headline mb6-gray' style='color:darkred;'>Northwest United States History of Forest Fires</h1>
-            <h2 style='color:red;'>(Map Data May Take a Few Moments to Load)</h2>
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
@@ -177,7 +178,9 @@
     </div>
 
 
-
+    <div id='loader'> Loading, this may take a few moments
+        <img src='circular.gif' alt='loader' />
+    </div>
 
 
 
@@ -299,7 +302,7 @@
                 center: [45, -111],
                 zoom: 6
             });
-            
+
             // get the currently selected style
             selectedStyle = $('li.selected').attr('id');
             var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
@@ -311,13 +314,14 @@
             });
             map.addLayer(tiles);
             var tiles1 = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
-	maxZoom: 18,
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                maxZoom: 18,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
 
 
 
             var sourceObject = {
+
                 user_name: 'owenjeff',
                 type: 'cartodb',
                 sublayers: [
@@ -349,82 +353,101 @@
                         interactivity: 'cartodb_id'
                     },
 
+
+
                 ]
+
+
+
             };
+
+
 
             cartodb.createLayer(map, sourceObject, {
                     legends: false
                 })
                 .addTo(map)
-                .on('done', function (layers) {
 
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#fire_history_1_template').text()
-                    });
-
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_1_template').text()
-                    });
-
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_1_template').text()
-                    });
-
-                    createSelector(layers);
-
-                    addTimeSlider(layers.getSubLayer(2));
-
-
-                    layers.setZIndex(9000);
-                    // define basemap options
-                    var LayerActions = {
-                        topo: function () {
-                            // if map_object has already a basemap, remove it and add a new one
-                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                                map.removeLayer(tiles);
-                                map.removeLayer(tiles1);
-                            }
-
-                            map.addLayer(tiles);
-                            return true;
-                        },
-                        // if map_object has already a basemap, remove it and add a new one
-                        gray: function () {
-                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                                map.removeLayer(tiles);
-                                map.removeLayer(tiles1);
-                            }
-                            map.addLayer(tiles1);
-                            return true;
-                        }
-                    }
-                    $('#selector').change(function () {
-                        LayerActions[$(this).val()]();
-                    });
+            .on('done', function (layers) {
 
 
 
-                }).on('error', function () {
-                    cartodb.log.log("some error occurred");
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#fire_history_1_template').text()
                 });
+
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#national_parks_1_template').text()
+
+                });
+
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#administrative_boundaries_1_template').text()
+
+                });
+
+
+                createSelector(layers);
+
+                addTimeSlider(layers.getSubLayer(2));
+
+
+                layers.setZIndex(9000);
+                // define basemap options
+                var LayerActions = {
+                    topo: function () {
+                        // if map_object has already a basemap, remove it and add a new one
+                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                            map.removeLayer(tiles);
+                            map.removeLayer(tiles1);
+                        }
+
+                        map.addLayer(tiles);
+                        return true;
+                    },
+                    // if map_object has already a basemap, remove it and add a new one
+                    gray: function () {
+                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                            map.removeLayer(tiles);
+                            map.removeLayer(tiles1);
+                        }
+                        map.addLayer(tiles1);
+                        return true;
+                    }
+                }
+                $('#selector').change(function () {
+                    LayerActions[$(this).val()]();
+                });
+
+            }).on('error', function () {
+                cartodb.log.log("some error occurred");
+            });
+
 
             var selectedLayer;
             // create layer selector
+
+
             function createSelector(layers) {
                 var sql = new cartodb.SQL({
                     user: 'owenjeff'
                 });
 
 
-                $('#layer_selector li').click(function (e) {
+                $('#layer_selector').click(function (e) {
                     // get the area of the selected layer
 
+
                     var layer = $(e.target).attr('id');
-                    console.log(layer)
+                    console.log(layer);
+
                     if (selectedLayer != layer) {
+
+                        $('#loader').show();
+
                         // definitely more elegant ways to do this, but went for
                         // ease of understanding
                         if (layer == 'show') {
@@ -435,21 +458,32 @@
                             layers.getSubLayer(0).hide();
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
-                        } 
+                        }
+
+                        $('#loader').delay(5000).fadeOut();
+
                     }
+
+
                 });
+
+
             }
+
 
 
             function changeLegend(start, end) {
                 $('#legend').html("Forest Fire Years " + new Number(start) + " - " + new Number(end))
+
             }
 
             function addTimeSlider(sublayer) {
+
                 var sql = cartodb.SQL({
-                        user: 'owenjeff'
-                    })
-                    // fetch time range
+                    user: 'owenjeff'
+                })
+
+                // fetch time range
                 sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
 
                     var range = data.rows[0];
@@ -457,31 +491,43 @@
                     var min = new Number(range.min)
                         // update slider with range
                     $("#slider").slider({
+
                         range: true,
                         min: 1889,
                         max: 2003,
                         values: [1889, 2003],
                         slide: function (event, ui) {
+
                             // give feedback to the user on slide change
                             changeLegend(ui.values[0], ui.values[1]);
                         },
+
+
                         stop: function (event, ui) {
+
+                            $('#loader').show();
                             // when user selects the dates, update the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
 
+                            $('#loader').delay(5000).fadeOut();
                             // build sql
                             sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
                         }
+
+
                     });
                     changeLegend(1889, 2003);
                 });
+
             }
 
 
 
 
         })(); // all custom code ends here
+
+        $('#loader').hide();
     </script>
 </body>
 
