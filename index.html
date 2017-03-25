@@ -131,12 +131,15 @@
         #loader {
             text-align: center;
             position: absolute;
-            top: 0;
-            bottom: 0;
-            right: 0;
-            width: 75%;
-            background-color: rgba(245, 245, 245, 0.7);
+            top: 35%;
+            right: 33%;
+            width: 200px;
+            height: 150px;
             z-index: 200;
+            background-color: rgba(245, 245, 245, 0.7);
+            padding: 5px;
+            border-radius: 25px;
+            pointer-events: none;
         }
         /*       since we know the height/width of the loader gif,
          position absolutely and use top/left, subtracting half of
@@ -179,7 +182,7 @@
     </div>
 
 
-    <div id='loader'> Loading, this may take a few moments
+    <div id='loader'> Loading, this may take a few moments...
         <img src='circular.gif' alt='loader' />
     </div>
 
