@@ -14,12 +14,10 @@
             overflow-y: hidden;
             height: 99%;
         }
-
         body {
             min-height: 100%;
             font-family: 'Fira Sans', sans-serif;
         }
-
         #map {
             position: fixed;
             top: 0;
@@ -32,7 +30,6 @@
             background: 'white';
             border-left: 3px solid darkred;
         }
-
         #slider {
             position: fixed;
             bottom: 40px;
@@ -40,7 +37,6 @@
             width: 65%;
             color: red;
         }
-
         #legend {
             font-size: 27px;
             position: fixed;
@@ -50,7 +46,6 @@
             background: coral;
             padding: 5px;
         }
-
         div.cartodb-legend-stack {
             position: fixed;
             right: 0px;
@@ -58,21 +53,17 @@
             height: 120px;
             padding: 20px;
         }
-
         .cartodb-legend ul li {
             margin-left: 5px;
             font-size: 10px;
         }
-
         .cartodb-legend img {
             margin-left: 20px;
         }
-
         img {
             width: 95%;
             height: 35%;
         }
-
         li,
         h1,
         h2,
@@ -81,13 +72,11 @@
             padding-left: 10px;
             text-align: left;
         }
-
         div.grid {
             position: fixed;
             width: 24.5%;
             height: 30%;
         }
-
         #layer_selector {
             position: fixed;
             top: 200px;
@@ -95,13 +84,11 @@
             padding: 0;
             font-family: 'Fira Sans', sans-serif;
         }
-
         #layer_selector ul {
             padding: 0;
             margin: 0;
             list-style-type: none;
         }
-
         #layer_selector li {
             border-bottom: 1px solid #999;
             padding: 15px 30px;
@@ -109,16 +96,13 @@
             color: #444;
             cursor: auto;
         }
-
         #layer_selector li:hover {
             background-color: #F0F0F0;
             cursor: pointer;
         }
-
         #layer_selector li.selected {
             background-color: #EEE;
         }
-
         #selector_menu {
             position: fixed;
             top: 10px;
@@ -127,7 +111,6 @@
             padding: 5px;
             background: coral;
         }
-
         #loader {
             text-align: center;
             position: absolute;
@@ -141,7 +124,6 @@
         /*       since we know the height/width of the loader gif,
          position absolutely and use top/left, subtracting half of
          width and heigth using margin */
-
         #loader img {
             width: 66px;
             height: 66px;
@@ -165,13 +147,14 @@
             <a target='_blank' href="http://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='http://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows all the national parks and forests within the area of all these fires occurred. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem. Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and
                         <a target='_blank' class='link' href='https://catalog.data.gov/dataset/national-park-boundariesf0a4c'>data.gov</a>
                     </li>
                     <li>Map authored by <a target='_blank' class='link' href='https://github.com/OwenJeff'>Owen Mickelson</a> on March 13,2017</li>
+                    <li>This map is hosted through CartoDB. See the data from this map projected here on the <a target='_blank' class='link' href='https://owenjeff.carto.com/builder/3be87ca6-1033-11e7-92ed-0e8c56e2ffdb/embed'>Northwest United States History of Forest Fires</a> map.</li>
                 </ul>
             </footer>
         </div>
@@ -302,7 +285,6 @@
                 center: [45, -111],
                 zoom: 6
             });
-
             // get the currently selected style
             selectedStyle = $('li.selected').attr('id');
             var tiles = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
@@ -317,15 +299,10 @@
                 maxZoom: 18,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
-
-
-
             var sourceObject = {
-
                 user_name: 'owenjeff',
                 type: 'cartodb',
                 sublayers: [
-
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM national_parks_1",
@@ -334,7 +311,6 @@
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
-
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM administrative_boundaries_1",
@@ -343,7 +319,6 @@
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
-
                     {
                         // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM fire_history_1",
@@ -352,49 +327,27 @@
                         // Sets interactivity from cartoDB ID
                         interactivity: 'cartodb_id'
                     },
-
-
-
                 ]
-
-
-
             };
-
-
-
             cartodb.createLayer(map, sourceObject, {
                     legends: false
                 })
                 .addTo(map)
-
             .on('done', function (layers) {
-
-
-
                 cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year'], {
                     // Calls up info window template from the html
                     infowindowTemplate: $('#fire_history_1_template').text()
                 });
-
                 cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
                     // Calls up info window template from the html
                     infowindowTemplate: $('#national_parks_1_template').text()
-
                 });
-
                 cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
                     // Calls up info window template from the html
                     infowindowTemplate: $('#administrative_boundaries_1_template').text()
-
                 });
-
-
                 createSelector(layers);
-
                 addTimeSlider(layers.getSubLayer(2));
-
-
                 layers.setZIndex(9000);
                 // define basemap options
                 var LayerActions = {
@@ -404,7 +357,6 @@
                             map.removeLayer(tiles);
                             map.removeLayer(tiles1);
                         }
-
                         map.addLayer(tiles);
                         return true;
                     },
@@ -421,33 +373,21 @@
                 $('#selector').change(function () {
                     LayerActions[$(this).val()]();
                 });
-
             }).on('error', function () {
                 cartodb.log.log("some error occurred");
             });
-
-
             var selectedLayer;
             // create layer selector
-
-
             function createSelector(layers) {
                 var sql = new cartodb.SQL({
                     user: 'owenjeff'
                 });
-
-
                 $('#layer_selector').click(function (e) {
                     // get the area of the selected layer
-
-
                     var layer = $(e.target).attr('id');
                     console.log(layer);
-
                     if (selectedLayer != layer) {
-
                         $('#loader').show();
-
                         // definitely more elegant ways to do this, but went for
                         // ease of understanding
                         if (layer == 'show') {
@@ -459,39 +399,24 @@
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
                         }
-
                         $('#loader').delay(5000).fadeOut();
-
                     }
-
-
                 });
-
-
             }
-
-
-
             function changeLegend(start, end) {
                 $('#legend').html("Forest Fire Years " + new Number(start) + " - " + new Number(end))
-
             }
-
             function addTimeSlider(sublayer) {
-
                 var sql = cartodb.SQL({
                     user: 'owenjeff'
                 })
-
                 // fetch time range
                 sql.execute('select max(fire_year), min(fire_year) from fire_history_nrocky_1889_2003_1', function (data) {
-
                     var range = data.rows[0];
                     var max = new Number(range.max)
                     var min = new Number(range.min)
                         // update slider with range
                     $("#slider").slider({
-
                         range: true,
                         min: 1889,
                         max: 2003,
@@ -502,30 +427,19 @@
                             changeLegend(ui.values[0], ui.values[1]);
                         },
                         stop: function (event, ui) {
-
                             $('#loader').show()
                             // when user selects the dates, update the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
-
-
                             // build sql
                             sublayer.setSQL("select * from fire_history_nrocky_1889_2003_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
                             $('#loader').delay(5000).fadeOut();
                         }
-
-
                     });
                     changeLegend(1889, 2003);
                 });
-
             }
-
-
-
-
         })(); // all custom code ends here
-
         $('#loader').hide();
     </script>
 </body>
