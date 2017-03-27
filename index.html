@@ -305,7 +305,9 @@
             var map = new L.Map('map', {
                 zoomControl: true,
                 center: [45, -111],
-                zoom: 6
+                zoom: 6,
+                maxZoom: 16,
+                minZoom: 0
             });
             // get the currently selected style
             selectedStyle = $('li.selected').attr('id');
