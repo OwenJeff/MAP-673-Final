@@ -47,8 +47,11 @@
             bottom: 80px;
             width: 26%;
             right: 42%;
-            background: green;
+            background: darkred;
             padding: 5px;
+            text-align: center;
+            color: white;
+            border-radius: 10px;
         }
         
         div.cartodb-legend-stack {
@@ -57,6 +60,7 @@
             top: 20px;
             height: 120px;
             padding: 10px;
+            border-radius: 5px;
         }
         
         .cartodb-legend ul li {
@@ -94,6 +98,7 @@
             right: 20px;
             padding: 0;
             font-family: 'Fira Sans', sans-serif;
+            border-radius: 5px;
         }
         
         #layer_selector ul {
@@ -125,7 +130,8 @@
             left: 30%;
             z-index: 9000;
             padding: 5px;
-            background: green;
+            background: darkred;
+            border-radius: 5px;
         }
         
         #loader {
@@ -141,9 +147,6 @@
             border-radius: 25px;
             pointer-events: none;
         }
-        /*       since we know the height/width of the loader gif,
-         position absolutely and use top/left, subtracting half of
-         width and heigth using margin */
         
         #loader img {
             width: 66px;
@@ -168,8 +171,11 @@
             <a target='_blank' href="https://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='https://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. <br>
-                <br> There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem. Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances.
+                <br>
+                <br> For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem.
+                <br>
+                <br> Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and
@@ -212,8 +218,8 @@
 
     <div id='selector_menu'>
         <select id='selector'>
-            <option value='topo'>Topographic Base Map</option>
-            <option value='gray'>Gray Scale Base Map</option>
+            <option value='topo'>Terrain Base Map</option>
+            <option value='gray'>Gray Base Map</option>
         </select>
 
     </div>
@@ -268,32 +274,32 @@
 
 
     <script type="infowindow/html" id="fire_history_1_template">
-        <div class="cartodb-popup">
+        <div class="cartodb-popup" style="background:darkred; border-radius: 5px;">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
-            <div class="cartodb-popup-content-wrapper">
-                <div class="cartodb-popup-content">
-                    <p>This fire occurred in {{fire_year}}</p>
-                    <p>with {{acres}} acres burned.</p>
+            <div class="cartodb-popup-content-wrapper" style="background:darkred; border-radius: 5px;">
+                <div class="cartodb-popup-content" style="background:darkred;">
+                    <p style="color:white; text-align:center; font-family: 'Fira Sans', sans-serif;"> This fire occurred in {{fire_year}}
+                        <br> and burned {{acres}} acres.</p>
                 </div>
             </div>
     </script>
 
     <script type="infowindow/html" id="national_parks_1_template">
-        <div class="cartodb-popup">
+        <div class="cartodb-popup" style="background:green; border-radius: 5px;">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
-            <div class="cartodb-popup-content-wrapper">
-                <div class="cartodb-popup-content">
-                    <p>{{parkname}} {{designatio}}</p>
+            <div class="cartodb-popup-content-wrapper" style="background:green; border-radius: 5px;">
+                <div class="cartodb-popup-content" style="background:green;">
+                    <p style="color:white; text-align:center; font-family: 'Fira Sans', sans-serif;">{{parkname}} {{designatio}}</p>
                 </div>
             </div>
     </script>
 
     <script type="infowindow/html" id="administrative_boundaries_1_template">
-        <div class="cartodb-popup">
+        <div class="cartodb-popup" style="background:green; border-radius: 5px;">
             <a href="#close" class="cartodb-popup-close-button close">x</a>
-            <div class="cartodb-popup-content-wrapper">
-                <div class="cartodb-popup-content">
-                    <p>{{forestname}}</p>
+            <div class="cartodb-popup-content-wrapper" style="background:green; border-radius: 5px;">
+                <div class="cartodb-popup-content" style="background:green;">
+                    <p style="color:white; text-align:center; font-family: 'Fira Sans', sans-serif;">{{forestname}}</p>
                 </div>
             </div>
     </script>
@@ -308,8 +314,8 @@
                 zoomControl: true,
                 center: [45, -111],
                 zoom: 6,
-                maxZoom: 16,
-                minZoom: 0
+                maxZoom: 14,
+                minZoom: 2
             });
             // get the currently selected style
             selectedStyle = $('li.selected').attr('id');
