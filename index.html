@@ -168,7 +168,8 @@
             <a target='_blank' href="https://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='https://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem. Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances. For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. <br>
+                <br> There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem. Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and
@@ -254,7 +255,7 @@
 
 
     <script type="cartocss/html" id="fire_history_1-styles">
-        #layer { polygon-fill: ramp([shape_area], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
+        #layer { polygon-fill: ramp([area_], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
     </script>
 
     <script type="cartocss/html" id="national_parks_1-styles">
@@ -272,7 +273,7 @@
             <div class="cartodb-popup-content-wrapper">
                 <div class="cartodb-popup-content">
                     <p>This Fire Occurred In {{fire_year}}</p>
-                    <p>{{shape_area}} sq ft burned</p>
+                    <p>{{acres}} acres burned</p>
                 </div>
             </div>
     </script>
@@ -359,7 +360,7 @@
                 })
                 .addTo(map)
                 .on('done', function (layers) {
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year', 'shape_area'], {
+                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year', 'acres'], {
                         // Calls up info window template from the html
                         infowindowTemplate: $('#fire_history_1_template').text()
                     });
