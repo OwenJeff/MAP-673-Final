@@ -166,23 +166,23 @@
 
     <div class="grid">
         <div style=" width:99%; height: 325%; overflow:scroll; overflow-y:scroll; overflow-x:hidden;">
-
             <h1 class='txt-headline mb6-gray' style='color:darkred;'>Northwest United States History of Forest Fires</h1>
             <a target='_blank' href="https://visityellowstonenationalparkyall.weebly.com/uploads/1/9/1/2/19128651/8387985.jpg?1367968566"><img src="YellowstoneFire.jpg"></a>
             <p>Read about the <a target='_blank' class='link' href='https://visityellowstonenationalparkyall.weebly.com/succession.html'>1988 Yellowstone National Park Fire</a> and its biological succession.</p>
             <h2 class='txt-xl mt18-gray mb12-gray' style='color:darkred;'>About This Map</h2>
-            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances.
+            <p>This map shows all the forest fires for the northwest United States. The years listed here for forest fires are from 1889 to 2003. With each fire, it is shown how many acres were burned. This also shows the national parks and forests within the area of all these fire occurrances. This map can be primarily used to trace patterns of every known forest fire for over a hundred years. There are years of high rates of forest fires and those of lower rates of fire occurances.
                 <br>
                 <br> For example, the year 1988 was a particularly intense year for forest fires especially in Yellowstone National Park and parts of Idaho. There are several factors that can contribute to these breakouts of forest fires including drought, wind patterns, and human activity. It was long thought that these forest fires were destructive to the environment but after years of research we have concluded that these natural fires are a benefit and necessity to the ecosystem.
                 <br>
                 <br> Biological succession is when new growth and organism life replaces the old ecosystem that previously existed when it was cut down by a natural disaster event such as a forest fire. Overall forest fires are actually very good for the environment because they lay the path for new biological growth in an ecosystem.</p>
             <footer class='mt12 bg-gray-faint txt-s'>
                 <ul>
+                    <li>Map authored by <a target='_blank' class='link' href='https://github.com/OwenJeff'>Owen Cummings Mickelson</a> on April 1, 2017</li>
+                    <li>See my New Maps Plus <a target='_blank' class='link' href='https://owenjeff.github.io/'>Portfolio</a> here</li>
                     <li>All data was obtained at the <a target='_blank' class='link' href='https://www.fs.usda.gov/detailfull/r1/landmanagement/gis/?cid=stelprd3852570&width=full'>United States Department of Agriculture</a> and
                         <a target='_blank' class='link' href='https://catalog.data.gov/dataset/national-park-boundariesf0a4c'>data.gov</a>
                     </li>
-                    <li>Map authored by <a target='_blank' class='link' href='https://github.com/OwenJeff'>Owen Mickelson</a> on March 13,2017</li>
-                    <li>This map is hosted through CartoDB. See the data from this map projected here on the <a target='_blank' class='link' href='https://owenjeff.carto.com/builder/3be87ca6-1033-11e7-92ed-0e8c56e2ffdb/embed'>Northwest United States History of Forest Fires</a> map.</li>
+                    <li>This map is hosted through CartoDB. See the data from this map projected here on the <a target='_blank' class='link' href='https://owenjeff.carto.com/builder/3be87ca6-1033-11e7-92ed-0e8c56e2ffdb/embed'>Northwest United States History of Forest Fires</a> map</li>
                     <li>Here is my 7 minute video presentation on this map through <a target='_blank' class='link' href='https://drive.google.com/file/d/0B6cng5cykkgPVFBFTUlDMlIwbmM/view'>My Google Drive</a></li>
                 </ul>
             </footer>
@@ -194,17 +194,11 @@
         <img src='circular.gif' alt='loader' />
     </div>
 
-
-
     <div id="map"></div>
-
 
     <div id="slider"></div>
 
-
-
     <div id="legend"></div>
-
 
     <div id="layer_selector" class="cartodb-infobox">
         <ul>
@@ -213,52 +207,30 @@
         </ul>
     </div>
 
-
-
-
     <div id='selector_menu'>
         <select id='selector'>
             <option value='topo'>Terrain Base Map</option>
             <option value='gray'>Gray Base Map</option>
         </select>
-
     </div>
 
     <div class="cartodb-legend-stack">
-
         <div class="cartodb-legend custom">
-
             <div class="legend-title">Fire Intensity</div>
-
             <ul>
-
-
                 <li>
                     <div class="bullet" style="background-color:#bd0026;"></div>Severe</li>
-
                 <li>
                     <div class="bullet" style="background-color:#f03b20;"></div>Moderate - Severe</li>
-
                 <li>
                     <div class="bullet" style="background-color:#fd8d3c;"></div>Moderate</li>
-
                 <li>
                     <div class="bullet" style="background-color:#fecc5c;"></div>Mild - Moderate</li>
-
                 <li>
                     <div class="bullet" style="background-color:#ffffb2;"></div>Mild</li>
-
-
-
-
             </ul>
-
         </div>
-
-
     </div>
-
-
 
     <script type="cartocss/html" id="fire_history_1-styles">
         #layer { polygon-fill: ramp([area_], (#ffffb2, #fecc5c, #fd8d3c, #f03b20, #bd0026), jenks); line-width: 0; line-color: #FFF; line-opacity: 1; polygon-opacity: 0.7;}
@@ -304,12 +276,14 @@
             </div>
     </script>
 
-
     <script src="https://cartodb-libs.global.ssl.fastly.net/cartodb.js/v3/3.15/cartodb.js"></script>
     <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
     <script>
+        // Starts main map functions
         (function () {
+
+            // Sets map element and centers upon given location
             var map = new L.Map('map', {
                 zoomControl: true,
                 center: [45, -111],
@@ -317,8 +291,11 @@
                 maxZoom: 14,
                 minZoom: 2
             });
-            // get the currently selected style
+
+            // html element selected style
             selectedStyle = $('li.selected').attr('id');
+
+            // Loads the terrain base map
             var tiles = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.{ext}', {
                 attribution: 'Map tiles by <a href="https://stamen.com">Stamen Design</a>, <a href="https://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 subdomains: 'abcd',
@@ -327,10 +304,14 @@
                 ext: 'png'
             });
             map.addLayer(tiles);
+
+            // Loads the gray base map
             var tiles1 = L.tileLayer('https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
             });
+
+            // Uses variable source object methods to call up each layer
             var sourceObject = {
                 user_name: 'owenjeff',
                 type: 'cartodb',
@@ -344,7 +325,6 @@
                         interactivity: 'cartodb_id'
                     },
                     {
-                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM administrative_boundaries_1",
                         // Uses css rules from cartoDB
                         cartocss: $("#administrative_boundaries_1-styles").text(),
@@ -352,7 +332,6 @@
                         interactivity: 'cartodb_id'
                     },
                     {
-                        // Loads CartoDB geojson dataset from sql query, the same goes for the 2 other layers...
                         sql: "SELECT * FROM fire_history_1",
                         // Uses css rules from cartoDB
                         cartocss: $("#fire_history_1-styles").text(),
@@ -361,54 +340,72 @@
                     },
                 ]
             };
+
+            // Uses create layer method for carto.js and binds it to a secure script
             cartodb.createLayer(map, sourceObject, {
                     https: true
                 })
                 .addTo(map)
-                .on('done', function (layers) {
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year', 'acres'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#fire_history_1_template').text()
-                    });
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#national_parks_1_template').text()
-                    });
-                    cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
-                        // Calls up info window template from the html
-                        infowindowTemplate: $('#administrative_boundaries_1_template').text()
-                    });
-                    createSelector(layers);
-                    addTimeSlider(layers.getSubLayer(2));
-                    layers.setZIndex(9000);
-                    // define basemap options
-                    var LayerActions = {
-                        topo: function () {
-                            // if map_object has already a basemap, remove it and add a new one
-                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                                map.removeLayer(tiles);
-                                map.removeLayer(tiles1);
-                            }
-                            map.addLayer(tiles);
-                            return true;
-                        },
-                        // if map_object has already a basemap, remove it and add a new one
-                        gray: function () {
-                            if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
-                                map.removeLayer(tiles);
-                                map.removeLayer(tiles1);
-                            }
-                            map.addLayer(tiles1);
-                            return true;
-                        }
-                    }
-                    $('#selector').change(function () {
-                        LayerActions[$(this).val()]();
-                    });
-                }).on('error', function () {
-                    cartodb.log.log("some error occurred");
+
+            // Adds functions to each layer
+            .on('done', function (layers) {
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(2), ['fire_year', 'acres'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#fire_history_1_template').text()
                 });
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(0), ['parkname', 'designatio'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#national_parks_1_template').text()
+                });
+                cartodb.vis.Vis.addInfowindow(map, layers.getSubLayer(1), ['forestname'], {
+                    // Calls up info window template from the html
+                    infowindowTemplate: $('#administrative_boundaries_1_template').text()
+                });
+
+                // Calls functions to make selector for boundary layers
+                createSelector(layers);
+
+                // Calls function to time slider for fire data
+                addTimeSlider(layers.getSubLayer(2));
+
+                layers.setZIndex(9000);
+
+                // define basemap options
+                var LayerActions = {
+                    topo: function () {
+
+                        // if map_object has already a basemap, remove it and add a new one
+                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                            map.removeLayer(tiles);
+                            map.removeLayer(tiles1);
+                        }
+                        map.addLayer(tiles);
+                        return true;
+                    },
+
+                    // if map_object has already a basemap, remove it and add a new one
+                    gray: function () {
+                        if (map.hasLayer(tiles) || (map.hasLayer(tiles1))) {
+                            map.removeLayer(tiles);
+                            map.removeLayer(tiles1);
+                        }
+                        map.addLayer(tiles1);
+                        return true;
+                    }
+                }
+
+                // html element for layer selector
+                $('#selector').change(function () {
+                    LayerActions[$(this).val()]();
+                });
+            }).on('error', function () {
+
+                // Console log some error occured
+                cartodb.log("some error occurred");
+            });
+
             var selectedLayer;
+
             // create layer selector
             function createSelector(layers) {
                 var sql = new cartodb.SQL({
@@ -419,37 +416,45 @@
                     var layer = $(e.target).attr('id');
                     console.log(layer);
                     if (selectedLayer != layer) {
+
+                        // Uses loader upon button click
                         $('#loader').show();
-                        // definitely more elegant ways to do this, but went for
-                        // ease of understanding
+
+                        // Helps to show and hide national forest and park boundary layers
                         if (layer == 'show') {
-                            layers.getSubLayer(0).show(); // countries
-                            layers.getSubLayer(1).show(); // cables
-                            layers.getSubLayer(2).show(); // populated places
+                            layers.getSubLayer(0).show(); // parks
+                            layers.getSubLayer(1).show(); // forests
+                            layers.getSubLayer(2).show(); // fires
                         } else if (layer == 'hide') {
                             layers.getSubLayer(0).hide();
                             layers.getSubLayer(1).hide();
                             layers.getSubLayer(2).show();
                         }
+
+                        // Hides loader after 5 seconds
                         $('#loader').delay(5000).fadeOut();
                     }
                 });
             }
 
+            // Makes change legend function to year values above slider
             function changeLegend(start, end) {
                 $('#legend').html("Forest Fire Years " + new Number(start) + " - " + new Number(end))
             }
 
+            // Makes function for the time slider
             function addTimeSlider(sublayer) {
                 var sql = cartodb.SQL({
-                        user: 'owenjeff'
-                    })
-                    // fetch time range
+                    user: 'owenjeff'
+                })
+
+                // fetch time range
                 sql.execute('select max(fire_year), min(fire_year) from fire_history_1', function (data) {
                     var range = data.rows[0];
                     var max = new Number(range.max)
                     var min = new Number(range.min)
-                        // update slider with range
+
+                    // update slider with range
                     $("#slider").slider({
                         range: true,
                         min: 1889,
@@ -457,23 +462,34 @@
                         values: [1889, 2003],
 
                         slide: function (event, ui) {
+
                             // give feedback to the user on slide change
                             changeLegend(ui.values[0], ui.values[1]);
                         },
                         stop: function (event, ui) {
+
+                            // Shows loader after time slider function
                             $('#loader').show()
-                                // when user selects the dates, update the layer with the range
+
+                            // when user selects the years, updates the layer with the range
                             var start = ui.values[0]
                             var end = ui.values[1]
-                                // build sql
+
+                            // build sql
                             sublayer.setSQL("select * from fire_history_1 where fire_year >= '" + start + "' and fire_year <= '" + end + "'");
+
+                            // Hides loader after 5 seconds
                             $('#loader').delay(5000).fadeOut();
                         }
                     });
+
+                    // Calls function to change legend
                     changeLegend(1889, 2003);
                 });
             }
-        })(); // all custom code ends here
+        })(); // all carto.js code ends here
+
+        // Hides loader after main page has loaded
         $('#loader').hide();
     </script>
 </body>
